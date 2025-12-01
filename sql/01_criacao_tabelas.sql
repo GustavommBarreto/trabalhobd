@@ -102,6 +102,7 @@ CREATE TABLE aluno (
     id_turma       INT UNSIGNED NOT NULL,
     id_endereco    INT UNSIGNED,
     id_responsavel INT UNSIGNED,
+    foto            LONGBLOB,
     CONSTRAINT fk_aluno_turma
         FOREIGN KEY (id_turma) REFERENCES turma(id_turma)
         ON UPDATE CASCADE ON DELETE RESTRICT,
