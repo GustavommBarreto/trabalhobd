@@ -197,6 +197,10 @@ def avaliacoes_editar(id):
 def avaliacoes_deletar(id):
     return render_template("avaliacoes/delete.html", avaliacao={"descricao": "Prova Exemplo"})
 
+@app.route("/relatorio/notas")
+def relatorio_notas():
+    dados = db.consultar("SELECT * FROM vw_notas_aluno_disciplina")
+    return render_template("relatorio/notas.html", dados=dados)
 
 if __name__ == "__main__":
     app.run(debug=True)

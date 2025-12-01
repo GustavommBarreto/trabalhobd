@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h2>Relatório – Notas por Aluno e Disciplina</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>ID Aluno</th>
+        <th>Aluno</th>
+        <th>Escola</th>
+        <th>Curso</th>
+        <th>Turma</th>
+        <th>Ano Letivo</th>
+        <th>Disciplina</th>
+        <th>Data</th>
+        <th>Tipo</th>
+        <th>Descrição</th>
+        <th>Nota</th>
+    </tr>
+
+    {% for item in dados %}
+    <tr>
+        <td>{{ item.id_aluno }}</td>
+        <td>{{ item.nome_aluno }}</td>
+        <td>{{ item.nome_escola }}</td>
+        <td>{{ item.nome_curso }}</td>
+        <td>{{ item.nome_turma }}</td>
+        <td>{{ item.ano_letivo }}</td>
+        <td>{{ item.nome_disciplina }}</td>
+        <td>{{ item.data }}</td>
+        <td>{{ item.tipo }}</td>
+        <td>{{ item.descricao }}</td>
+        <td>{{ item.nota }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
