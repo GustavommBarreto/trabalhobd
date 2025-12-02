@@ -79,19 +79,44 @@ class AvaliacaoRepository:
         finally:
             cursor.close(); conn.close()
 
+    # Método para utilizar a view das notas de um aluno
     @staticmethod
-    def criar_avaliacao_via_procedure(data, tipo, desc, nota, id_aluno, id_disc, id_turma):
+    def get_relatorio_view():
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            # Select na view
+            sql = "SELECT * FROM vw_notas_aluno_disciplina"
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except Exception as exc:
+            print(f"Erro ao ler View: {exc}")
+            return None
+        finally:
+            cursor.close(); conn.close()
+
+    # Método para utilizar a procedure de cálculo da média de um aluno
+    @staticmethod
+    def get_media_procedure(id_aluno, id_disciplina):
         conn = get_connection()
         cursor = conn.cursor()
         try:
-            args = (data, tipo, desc, nota, id_aluno, id_disc, id_turma)
-            # Chama a procedure criada no passo SQL
-            cursor.callproc('sp_inserir_avaliacao', args)
-            conn.commit()
-            return True
-        except Exception as e:
-            print(f"Erro na procedure: {e}")
-            return False
+            # 0 ou None como placeholder para o valor de saída
+            args = [id_aluno, id_disciplina, 0]
+            
+            # callproc executa a procedure e retorna a lista 'args' com os resultados
+            result_args = cursor.callproc('sp_calcular_media_aluno_disciplina', args)
+            
+            # O valor de saída é o terceiro elemento
+            media_calculada = result_args[2]
+            
+            if media_calculada:
+                return float(media_calculada)
+            else:
+                return 0.0
+    
+        except Exception as exc:
+            print(f"Erro na Procedure: {exc}")
+            return None
         finally:
-            cursor.close()
-            conn.close()
+            cursor.close(); conn.close()

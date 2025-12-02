@@ -27,7 +27,7 @@ class ResponsavelRepository:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True) 
         try:
-            sql = "SELECT id_professor, nome, parentesco, telefone, email, id_endereco FROM responsavel"
+            sql = "SELECT id_responsavel, nome, parentesco, telefone, email, id_endereco FROM responsavel"
             cursor.execute(sql)
             return cursor.fetchall()
         finally:

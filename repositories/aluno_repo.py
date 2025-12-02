@@ -88,52 +88,6 @@ class AlunoRepository:
             cursor.close(); conn.close()
 
     @staticmethod
-    def insert_aluno(nome, data_nasc, matricula, id_turma, id_endereco, id_responsavel, foto_bytes):
-        """
-        Insere aluno com foto (BLOB).
-        Retorna o ID do novo aluno ou None em caso de erro.
-        """
-        conn = get_connection()
-        if not conn: 
-            return None
-
-        cursor = conn.cursor()
-        try:
-            sql = """
-                INSERT INTO aluno 
-                (nome, data_nascimento, matricula, id_turma, id_endereco, id_responsavel, foto)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """
-            params = (nome, data_nasc, matricula, id_turma, id_endereco, id_responsavel, foto_bytes)
-            
-            cursor.execute(sql, params)
-            conn.commit()
-            return cursor.lastrowid
-        except mysql.connector.Error as exc:
-            print(f"Erro ao inserir aluno: {exc}")
-            return None
-        finally:
-            cursor.close(); conn.close()
-
-    @staticmethod
-    def get_alunos_view():
-        """
-        Busca dados usando a VIEW criada (Requisito acadêmico).
-        """
-        conn = get_connection()
-        if not conn: return []
-        
-        cursor = conn.cursor(dictionary=True)
-        try:
-            cursor.execute("SELECT * FROM vw_detalhes_aluno")
-            return cursor.fetchall()
-        except mysql.connector.Error as exc:
-            print(f"Erro ao ler view: {exc}")
-            return []
-        finally:
-            cursor.close(); conn.close()
-
-    @staticmethod
     def get_foto(id_aluno):
         """Recupera apenas o binário da foto para download/visualização."""
         conn = get_connection()

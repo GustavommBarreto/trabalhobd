@@ -14,11 +14,11 @@ SELECT
     av.descricao,
     av.nota
 FROM avaliacao av
-JOIN aluno      a ON a.id_aluno       = av.id_aluno
-JOIN turma      t ON t.id_turma       = av.id_turma
-JOIN disciplina d ON d.id_disciplina  = av.id_disciplina
-JOIN curso      c ON c.id_curso       = t.id_curso
-JOIN escola     e ON e.id_escola      = c.id_escola;
+LEFT JOIN aluno      a ON a.id_aluno       = av.id_aluno
+LEFT JOIN turma      t ON t.id_turma       = av.id_turma
+LEFT JOIN disciplina d ON d.id_disciplina  = av.id_disciplina
+LEFT JOIN curso      c ON c.id_curso       = t.id_curso
+LEFT JOIN escola     e ON e.id_escola      = c.id_escola;
 
 DELIMITER $$
 

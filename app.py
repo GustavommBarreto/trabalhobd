@@ -16,6 +16,10 @@ import io
 
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 # --- Rotas de ALUNO ---
 # Método CREATE
 @app.route('/alunos', methods=['POST'])
@@ -55,7 +59,7 @@ def atualizar_aluno(id):
     data = request.form
 
     foto_bytes = None
-    if 'foto' in request.files():
+    if 'foto' in request.files:
         foto_bytes = request.files['foto'].read()
     try:
         sucesso = AlunoRepository.update(
@@ -562,6 +566,55 @@ def deletar_turma(id):
     if TurmaRepository.delete(id):
         return jsonify({'msg': 'Deletado com sucesso'}), 200
     return jsonify({'erro': 'Erro ao deletar (verifique vínculos)'}), 400
+
+# --- ROTAS para View, Procedure e Trigger ---
+
+# Rota para VIEW de relatório de notas
+@app.route('/relatorios/notas', methods=['GET'])
+def relatorio_notas():
+    dados = AvaliacaoRepository.get_relatorio_view()
+    return jsonify(dados), 200
+
+# Rota para a PROCEDURE de cálculo de média
+@app.route('/alunos/<int:id_aluno>/media/<int:id_disciplina>', methods=['GET'])
+def calcular_media_aluno(id_aluno, id_disciplina):
+    media = AvaliacaoRepository.get_media_procedure(id_aluno, id_disciplina)
+    
+    if media is not None:
+        return jsonify({
+            "id_aluno": id_aluno,
+            "id_disciplina": id_disciplina,
+            "media_calculada": media
+        }), 200
+    return jsonify({"erro": "Erro ao calcular média"}), 500
+
+# Rota de teste para o TRIGGER
+@app.route('/testes/trigger', methods=['POST'])
+def teste_trigger():
+    # Tenta inserir uma nota inválida menor que 0 ou maior que 10
+    data = request.form
+    try:
+        novo_id = AvaliacaoRepository.create(
+            data.get('data'), 
+            data.get('tipo'), 
+            "Teste de Trigger - Nota Extrema", 
+            data.get('nota'),
+            data.get('id_aluno'),
+            data.get('id_disciplina'),
+            data.get('id_turma')
+        )
+        
+        # Busca o registro criado para ver qual nota o banco salvou
+        avaliacao_salva = AvaliacaoRepository.get_by_id(novo_id)
+        
+        return jsonify({
+            "mensagem": "Tentativa de inserção realizada",
+            "nota_enviada": data.get('nota'),
+            "nota_final_no_banco": avaliacao_salva['nota'],
+            "status_trigger": "FUNCIONOU" if float(avaliacao_salva['nota']) <= 10 else "FALHOU"
+        }), 201
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
