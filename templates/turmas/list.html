@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>Turmas</h1>
+
+<p>
+  <a href="{{ url_for('ui_criar_turma') }}">+ Nova turma</a>
+</p>
+
+<table border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Ano letivo</th>
+      <th>Escola (ID)</th>
+      <th>Curso (ID)</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for turma in turmas %}
+    <tr>
+      <td>{{ turma.id_turma }}</td>
+      <td>{{ turma.nome }}</td>
+      <td>{{ turma.ano_letivo }}</td>
+      <td>{{ turma.id_escola }}</td>
+      <td>{{ turma.id_curso }}</td>
+      <td>
+        <a href="{{ url_for('ui_editar_turma', id_turma=turma.id_turma) }}">Editar</a>
+        <form action="{{ url_for('ui_deletar_turma', id_turma=turma.id_turma) }}"
+              method="post"
+              style="display:inline;"
+              onsubmit="return confirm('Tem certeza que deseja excluir esta turma?');">
+          <button type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

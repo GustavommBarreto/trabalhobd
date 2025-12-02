@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>
+  {% if turma %}
+    Editar turma
+  {% else %}
+    Nova turma
+  {% endif %}
+</h1>
+
+<form method="post">
+  <p>
+    <label>Nome:</label><br>
+    <input type="text" name="nome" value="{{ turma.nome if turma else '' }}" required>
+  </p>
+
+  <p>
+    <label>Ano letivo:</label><br>
+    <input type="number" name="ano_letivo"
+           value="{{ turma.ano_letivo if turma else '' }}">
+  </p>
+
+  <p>
+    <label>Escola (ID):</label><br>
+    <input type="number" name="id_escola"
+           value="{{ turma.id_escola if turma and turma.id_escola else '' }}">
+  </p>
+
+  <p>
+    <label>Curso (ID):</label><br>
+    <input type="number" name="id_curso"
+           value="{{ turma.id_curso if turma and turma.id_curso else '' }}">
+  </p>
+
+  <p>
+    <button type="submit">Salvar</button>
+    <a href="{{ url_for('ui_listar_turmas') }}">Voltar</a>
+  </p>
+</form>
+{% endblock %}

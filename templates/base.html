@@ -53,9 +53,9 @@
 
 <nav>
     <a href="/">Início</a>
-    <a href="/alunos">Alunos</a>
-    <a href="/professores">Professores</a>
-    <a href="/turmas">Turmas</a>
+    <a href="{{ url_for('ui_listar_alunos') }}">Alunos</a>
+    <a href="{{ url_for('ui_listar_professores') }}">Professores</a>
+    <a href="{{ url_for('ui_listar_turmas') }}">Turmas</a>
     <a href="/disciplinas">Disciplinas</a>
     <a href="/relatorio/notas">Relatório</a>
 </nav>

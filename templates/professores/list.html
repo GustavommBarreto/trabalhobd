@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>Professores</h1>
+
+<p>
+  <a href="{{ url_for('ui_criar_professor') }}">+ Novo professor</a>
+</p>
+
+<table border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Especialidade</th>
+      <th>Escola (ID)</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for prof in professores %}
+    <tr>
+      <td>{{ prof.id_professor }}</td>
+      <td>{{ prof.nome }}</td>
+      <td>{{ prof.especialidade }}</td>
+      <td>{{ prof.id_escola }}</td>
+      <td>
+        <a href="{{ url_for('ui_editar_professor', id_professor=prof.id_professor) }}">Editar</a>
+
+        <form action="{{ url_for('ui_deletar_professor', id_professor=prof.id_professor) }}"
+              method="post"
+              style="display:inline;"
+              onsubmit="return confirm('Tem certeza que deseja excluir este professor?');">
+          <button type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

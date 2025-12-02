@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>
+  {% if professor %}
+    Editar professor
+  {% else %}
+    Novo professor
+  {% endif %}
+</h1>
+
+<form method="post">
+  <p>
+    <label>Nome:</label><br>
+    <input type="text" name="nome" value="{{ professor.nome if professor else '' }}" required>
+  </p>
+
+  <p>
+    <label>CPF:</label><br>
+    <input type="text" name="cpf" value="{{ professor.cpf if professor else '' }}">
+  </p>
+
+  <p>
+    <label>Data de nascimento:</label><br>
+    <input type="date" name="data_nascimento"
+           value="{{ professor.data_nascimento if professor else '' }}">
+  </p>
+
+  <p>
+    <label>Email:</label><br>
+    <input type="email" name="email" value="{{ professor.email if professor else '' }}">
+  </p>
+
+  <p>
+    <label>Telefone:</label><br>
+    <input type="text" name="telefone" value="{{ professor.telefone if professor else '' }}">
+  </p>
+
+  <p>
+    <label>Escola (ID):</label><br>
+    <input type="number" name="id_escola"
+           value="{{ professor.id_escola if professor and professor.id_escola else '' }}">
+  </p>
+
+  <p>
+    <label>Endereço (ID):</label><br>
+    <input type="number" name="id_endereco"
+           value="{{ professor.id_endereco if professor and professor.id_endereco else '' }}">
+  </p>
+
+  <p>
+    <button type="submit">Salvar</button>
+    <a href="{{ url_for('ui_listar_professores') }}">Voltar</a>
+  </p>
+</form>
+{% endblock %}

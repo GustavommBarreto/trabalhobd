@@ -1,8 +1,9 @@
 # Projeto Banco de Dados
 # Arquivo principal orquestrador
 
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
 from repositories.aluno_repo import AlunoRepository
+from repositories.turma_repo import TurmaRepository 
 from repositories.avaliacao_repo import AvaliacaoRepository
 from repositories.curso_repo import CursoRepository
 from repositories.disciplina_repo import DisciplinaRepository
@@ -19,6 +20,82 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+
+@app.route('/ui/alunos')
+def ui_listar_alunos():
+    
+    alunos = AlunoRepository.get_all() 
+    return render_template('alunos/list.html', alunos=alunos)
+
+@app.route('/ui/alunos/novo', methods=['GET', 'POST'])
+def ui_criar_aluno():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        data_nascimento = request.form.get('data_nascimento')
+        matricula = request.form.get('matricula')
+        id_turma = request.form.get('id_turma')
+        id_endereco = request.form.get('id_endereco') or None
+        id_responsavel = request.form.get('id_responsavel') or None
+
+        foto_bytes = None
+        if 'foto' in request.files and request.files['foto'].filename:
+            foto_bytes = request.files['foto'].read()
+
+        
+        AlunoRepository.create(
+            nome=nome,
+            data_nascimento=data_nascimento,
+            matricula=matricula,
+            id_turma=id_turma,
+            id_endereco=id_endereco,
+            id_responsavel=id_responsavel,
+            foto=foto_bytes
+        )
+
+        return redirect(url_for('ui_listar_alunos'))
+
+    # GET: mostra formulário
+    turmas = TurmaRepository.get_all()  # para preencher o <select> de turmas
+    return render_template('alunos/form.html', aluno=None, turmas=turmas)
+
+@app.route('/ui/alunos/<int:id_aluno>/editar', methods=['GET', 'POST'])
+def ui_editar_aluno(id_aluno):
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        data_nascimento = request.form.get('data_nascimento')
+        matricula = request.form.get('matricula')
+        id_turma = request.form.get('id_turma')
+        id_endereco = request.form.get('id_endereco') or None
+        id_responsavel = request.form.get('id_responsavel') or None
+
+        foto_bytes = None
+        if 'foto' in request.files and request.files['foto'].filename:
+            foto_bytes = request.files['foto'].read()
+
+        AlunoRepository.update(
+            id_aluno=id_aluno,
+            nome=nome,
+            data_nascimento=data_nascimento,
+            matricula=matricula,
+            id_turma=id_turma,
+            id_endereco=id_endereco,
+            id_responsavel=id_responsavel,
+            foto=foto_bytes
+        )
+
+        return redirect(url_for('ui_listar_alunos'))
+
+    # GET: carrega dados atuais do aluno
+    aluno = AlunoRepository.get_by_id(id_aluno)
+    turmas = TurmaRepository.get_all()
+    return render_template('alunos/form.html', aluno=aluno, turmas=turmas)
+
+@app.route('/ui/alunos/<int:id_aluno>/deletar', methods=['POST'])
+def ui_deletar_aluno(id_aluno):
+    AlunoRepository.delete(id_aluno)
+    return redirect(url_for('ui_listar_alunos'))
 
 # --- Rotas de ALUNO ---
 # Método CREATE
@@ -403,6 +480,70 @@ def deletar_funcionario(id):
 
 
 # ---- Rotas para PROFESSOR ---
+@app.route('/ui/professores')
+def ui_listar_professores():
+    professores = ProfessorRepository.get_all()  
+    return render_template('professores/list.html', professores=professores)
+
+
+@app.route('/ui/professores/novo', methods=['GET', 'POST'])
+def ui_criar_professor():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        cpf = request.form.get('cpf')
+        data_nascimento = request.form.get('data_nascimento')
+        email = request.form.get('email')
+        telefone = request.form.get('telefone')
+        id_escola = request.form.get('id_escola') or None
+        id_endereco = request.form.get('id_endereco') or None
+
+        ProfessorRepository.create(
+            nome,
+            cpf,
+            data_nascimento,
+            email,
+            telefone,
+            id_escola,
+            id_endereco
+        )
+
+        return redirect(url_for('ui_listar_professores'))
+
+    # GET: mostra o formulário vazio
+    return render_template('professores/form.html', professor=None)
+
+@app.route('/ui/professores/<int:id_professor>/editar', methods=['GET', 'POST'])
+def ui_editar_professor(id_professor):
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        cpf = request.form.get('cpf')
+        data_nascimento = request.form.get('data_nascimento')
+        email = request.form.get('email')
+        telefone = request.form.get('telefone')
+        id_escola = request.form.get('id_escola') or None
+        id_endereco = request.form.get('id_endereco') or None
+
+        ProfessorRepository.update(
+            id_professor,
+            nome,
+            cpf,
+            data_nascimento,
+            email,
+            telefone,
+            id_escola,
+            id_endereco
+        )
+
+        return redirect(url_for('ui_listar_professores'))
+
+    professor = ProfessorRepository.get_by_id(id_professor)
+    return render_template('professores/form.html', professor=professor)
+
+@app.route('/ui/professores/<int:id_professor>/deletar', methods=['POST'])
+def ui_deletar_professor(id_professor):
+    ProfessorRepository.delete(id_professor)
+    return redirect(url_for('ui_listar_professores'))
+
 # Método CREATE
 @app.route('/professores', methods=['POST'])
 def criar_professor():
@@ -513,6 +654,48 @@ def deletar_responsavel(id):
     return jsonify({'erro': 'Erro ao deletar (verifique vínculos)'}), 400
 
 # ---- Rotas para TURMA ---
+@app.route('/ui/turmas')
+def ui_listar_turmas():
+    turmas = TurmaRepository.get_all()
+    return render_template('turmas/list.html', turmas=turmas)
+
+
+@app.route('/ui/turmas/novo', methods=['GET', 'POST'])
+def ui_criar_turma():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        ano_letivo = request.form.get('ano_letivo')
+        id_escola = request.form.get('id_escola') or None
+        id_curso = request.form.get('id_curso') or None
+
+        TurmaRepository.create(nome, ano_letivo, id_escola, id_curso)
+
+        return redirect(url_for('ui_listar_turmas'))
+
+    return render_template('turmas/form.html', turma=None)
+
+
+@app.route('/ui/turmas/<int:id_turma>/editar', methods=['GET', 'POST'])
+def ui_editar_turma(id_turma):
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        ano_letivo = request.form.get('ano_letivo')
+        id_escola = request.form.get('id_escola') or None
+        id_curso = request.form.get('id_curso') or None
+        TurmaRepository.update(id_turma, nome, ano_letivo, id_escola, id_curso)
+
+        return redirect(url_for('ui_listar_turmas'))
+
+    turma = TurmaRepository.get_by_id(id_turma)
+    return render_template('turmas/form.html', turma=turma)
+
+
+@app.route('/ui/turmas/<int:id_turma>/deletar', methods=['POST'])
+def ui_deletar_turma(id_turma):
+    TurmaRepository.delete(id_turma)
+    return redirect(url_for('ui_listar_turmas'))
+
+
 # Método CREATE
 @app.route('/turmas', methods=['POST'])
 def criar_turma():
