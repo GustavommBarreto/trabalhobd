@@ -12,8 +12,11 @@
     <tr>
       <th>ID</th>
       <th>Nome</th>
-      <th>Especialidade</th>
+      <th>CPF</th>
+      <th>Email</th>
+      <th>Telefone</th>
       <th>Escola (ID)</th>
+      <th>Endereço (ID)</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -22,8 +25,11 @@
     <tr>
       <td>{{ prof.id_professor }}</td>
       <td>{{ prof.nome }}</td>
-      <td>{{ prof.especialidade }}</td>
+      <td>{{ prof.cpf }}</td>
+      <td>{{ prof.email }}</td>
+      <td>{{ prof.telefone }}</td>
       <td>{{ prof.id_escola }}</td>
+      <td>{{ prof.id_endereco }}</td>
       <td>
         <a href="{{ url_for('ui_editar_professor', id_professor=prof.id_professor) }}">Editar</a>
 
