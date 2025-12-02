@@ -1,7 +1,7 @@
 # Projeto Banco de Dados
 # Arquivo principal orquestrador
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from repositories.aluno_repo import AlunoRepository
 from repositories.avaliacao_repo import AvaliacaoRepository
 from repositories.curso_repo import CursoRepository

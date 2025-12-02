@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSys – Gestão Escolar</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4fa;
+            margin: 0;
+        }
+
+        header {
+            background-color: #0A4D96;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav {
+            background-color: #BFD7ED;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #0A4D96;
+        }
+
+        nav a:hover {
+            color: #003f7f;
+        }
+
+        main {
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    EduSys – Gestão Escolar
+</header>
+
+<nav>
+    <a href="/">Início</a>
+    <a href="{{ url_for('listar_alunos') }}">Alunos</a>
+    <a href="/escolas">Escolas</a>
+    <a href="/enderecos">Endereços</a>
+    <a href="/responsaveis">Responsáveis</a>
+    <a href="{{ url_for('listar_professores') }}">Professores</a>
+    <a href="/cursos">Cursos</a>
+    <a href="{{ url_for('listar_turmas') }}">Turmas</a>
+    <a href="/disciplinas">Disciplinas</a>
+    <a href="/funcionarios">Funcionários</a>
+    <a href="/relatorios/notas">Relatório</a>
+</nav>
+
+<main>
+    {% block conteudo %}{% endblock %}
+</main>
+
+</body>
+</html>
